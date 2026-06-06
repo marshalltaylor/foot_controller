@@ -158,6 +158,29 @@ ControlPanel::reset(void)
     state = PInit;
 }
 
+static MidiMessage msg_scratch = {
+    .channel = 7,
+    .tick    = 0,
+};
+
+void
+ControlPanel::send_note_on(uint8_t key)
+{
+    msg_scratch.controlMask = NoteOn;
+    msg_scratch.value       = key;
+    msg_scratch.data        = 64;
+    outMain.input(&msg_scratch, 0);
+}
+
+void
+ControlPanel::send_note_off(uint8_t key)
+{
+    msg_scratch.controlMask = NoteOff;
+    msg_scratch.value       = key;
+    msg_scratch.data        = 0;
+    outMain.input(&msg_scratch, 0);
+}
+
 void
 ControlPanel::tickStateMachine(int msTicksDelta)
 {
@@ -183,58 +206,88 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         state = PRun;
     }
 
+    if (left_red_button.serviceRisingEdge())
+    {
+        send_note_on(0x20);
+    }
+    if (left_red_button.serviceFallingEdge())
+    {
+        send_note_off(0x20);
+    }
+
+    if (right_red_button.serviceRisingEdge())
+    {
+        send_note_on(0x21);
+    }
+    if (right_red_button.serviceFallingEdge())
+    {
+        send_note_off(0x21);
+    }
+
     if (red_toggle_button.serviceRisingEdge())
     {
         red_toggle_led.setState(LEDON);
+        send_note_on(0x22);
     }
     if (red_toggle_button.serviceFallingEdge())
     {
         red_toggle_led.setState(LEDOFF);
+        send_note_off(0x22);
     }
 
     if (yellow_toggle_button.serviceRisingEdge())
     {
         yellow_toggle_led.setState(LEDON);
+        send_note_on(0x23);
     }
     if (yellow_toggle_button.serviceFallingEdge())
     {
         yellow_toggle_led.setState(LEDOFF);
+        send_note_off(0x23);
     }
 
     if (green_toggle_1_button.serviceRisingEdge())
     {
         green_toggle_1_led.setState(LEDON);
+        send_note_on(0x24);
     }
     if (green_toggle_1_button.serviceFallingEdge())
     {
         green_toggle_1_led.setState(LEDOFF);
+        send_note_off(0x24);
     }
 
     if (green_toggle_2_button.serviceRisingEdge())
     {
         green_toggle_2_led.setState(LEDON);
+        send_note_on(0x25);
     }
     if (green_toggle_2_button.serviceFallingEdge())
     {
         green_toggle_2_led.setState(LEDOFF);
+        send_note_off(0x25);
     }
 
     if (green_toggle_3_button.serviceRisingEdge())
     {
         green_toggle_3_led.setState(LEDON);
+        send_note_on(0x26);
     }
     if (green_toggle_3_button.serviceFallingEdge())
     {
         green_toggle_3_led.setState(LEDOFF);
+        send_note_off(0x26);
     }
 
     if (green_toggle_4_button.serviceRisingEdge())
     {
         green_toggle_4_led.setState(LEDON);
+        send_note_on(0x27);
     }
     if (green_toggle_4_button.serviceFallingEdge())
     {
         green_toggle_4_led.setState(LEDOFF);
+        send_note_off(0x27);
     }
 
     // Display
@@ -246,6 +299,7 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         {
             left_ctr = 0;
         }
+        controllers.setValue(0, left_ctr);
     }
     if (left_dec_button.serviceRisingEdge())
     {
@@ -255,6 +309,7 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         {
             left_ctr = 127;
         }
+        controllers.setValue(0, left_ctr);
     }
 
     if (right_inc_button.serviceRisingEdge())
@@ -265,6 +320,7 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         {
             right_ctr = 0;
         }
+        controllers.setValue(1, right_ctr);
     }
     if (right_dec_button.serviceRisingEdge())
     {
@@ -274,6 +330,7 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         {
             right_ctr = 127;
         }
+        controllers.setValue(1, right_ctr);
     }
 
     if (update_left)
@@ -316,5 +373,6 @@ ControlPanel::tickStateMachine(int msTicksDelta)
         {
             yellow_led.setState(LEDOFF);
         }
+        controllers.setValue(2, value);
     }
 }

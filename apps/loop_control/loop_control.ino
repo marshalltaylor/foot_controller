@@ -1,5 +1,7 @@
 #include "Arduino.h"
+#include <stdio.h>
 #include "globals.h"
+extern void globalsInit(void);
 
 //**Panel State Machine***********************//
 #include "controlPanel.h"
@@ -12,7 +14,7 @@ uint16_t debugCounter = 0;
 void setup()
 {
 	Serial.begin(115200);
-	Serial.println("Program Started");
+	printf("App:loop_control\r\n");
 
 	expander.init(0x3E); // initalizes Wire
 
@@ -20,30 +22,35 @@ void setup()
 	controls.reset();
 
 	expander.update();
+
+	globalsInit();
 	
 }
 
-//Set LOOP_DELAY to length of time between ticks of everything (in ms)
-#define LOOP_DELAY 5
+#define ESTIMATE_WORKLOAD_MS 1
+#define DESIRED_PERIOD_MS 3
+
+int second_counter = 0;
 
 void loop()
 {
 	//**Process the panel and state machine***********//  
-	controls.tickStateMachine(LOOP_DELAY);
+	controls.tickStateMachine(DESIRED_PERIOD_MS);
+	controllers.tick();
 	
 	//Delay the loop
-	delay(LOOP_DELAY);
+	delay(DESIRED_PERIOD_MS - ESTIMATE_WORKLOAD_MS);
 	
 	//Increment a counter for debug stuff
-	debugCounter = debugCounter + LOOP_DELAY;
-	if( debugCounter > 10000 )
+	debugCounter = debugCounter + DESIRED_PERIOD_MS;
+	//printf("t=%d\r\n", debugCounter); 
+	if( debugCounter > 1000 )
 	{
 		//Do debug stuff
-		Serial.print("State: ");
-		Serial.println(controls.getState()); 
-		//Serial.print("Free ram: ");
-		//Serial.println(freeRam());
+		//printf("State: %d\r\n", controls.getState()); 
 		debugCounter = 0;
+		second_counter++;
+		printf("s=%d\r\n", second_counter);
 	}
 	
 }

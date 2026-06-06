@@ -45,6 +45,8 @@ public:
     }
 
 private:
+    void send_note_on(uint8_t key);
+    void send_note_off(uint8_t key);
     // Internal Panel Components
     Button red_toggle_button;
     Button yellow_toggle_button;

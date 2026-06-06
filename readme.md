@@ -18,10 +18,10 @@ Add packages from `/arduino_libs`
 
 __Channel__
 
-Hardcoded channel 0
+Hardcoded channel 7
 
 __Controllers__
 
-* Left: 0 (range 0-127)
-* Right: 1 (range 0-127)
-* Selector: 2 (range 0-9)
+* Left: 20 (range 0-127)
+* Right: 21 (range 0-127)
+* Selector: 22 (range 0-7)
