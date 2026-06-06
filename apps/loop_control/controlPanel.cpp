@@ -159,7 +159,7 @@ ControlPanel::reset(void)
 }
 
 static MidiMessage msg_scratch = {
-    .channel = 7,
+    .channel = DEVICE_MIDI_CHANNEL,
     .tick    = 0,
 };
 

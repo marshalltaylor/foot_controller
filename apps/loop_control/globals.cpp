@@ -39,11 +39,11 @@ globalsInit (void)
     // arp.setOutput(1, &outAux, 0);
 
     controllers.setCtrlNum(0, 20); // Start of undefined controllers
-    controllers.setChannel(0, 7);
+    controllers.setChannel(0, DEVICE_MIDI_CHANNEL);
     controllers.setCtrlNum(1, 21);
-    controllers.setChannel(1, 7);
+    controllers.setChannel(1, DEVICE_MIDI_CHANNEL);
     controllers.setCtrlNum(2, 22);
-    controllers.setChannel(2, 7);
+    controllers.setChannel(2, DEVICE_MIDI_CHANNEL);
 
     controllers.setOutput(0, &outMain, 0);
 }
