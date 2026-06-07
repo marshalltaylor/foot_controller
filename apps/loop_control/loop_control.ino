@@ -15,6 +15,10 @@ void setup()
 {
 	Serial.begin(115200);
 	printf("App:loop_control\r\n");
+	printf("MIDI Output:\r\n");
+	printf(" channel: %d\r\n", DEVICE_MIDI_CHANNEL);
+	printf(" controllers 20 and up\r\n");
+	printf(" note on/off 0x20 and up\r\n");
 
 	expander.init(0x3E); // initalizes Wire
 
